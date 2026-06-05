@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Flashcards og prøveeksamen for STV1020 ved UiO">
+  <title>STV1020 Studieapp</title>
+  <link rel="stylesheet" href="styles.css?v=flip-fix-2">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="STV1020 Studieapp">
+      <span class="brand-mark">STV</span>
+      <span><strong>STV1020</strong><small>Studieapp</small></span>
+    </a>
+    <nav aria-label="Hovednavigasjon">
+      <button class="nav-button active" data-view="home">Oversikt</button>
+      <button class="nav-button" data-view="cards">Flashcards</button>
+      <button class="nav-button" data-view="exam">Prøveeksamen</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home-view" class="view active">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Kvantitativ metode, uten omveier</p>
+          <h1>Øv på begrepene.<br><span>Test forståelsen.</span></h1>
+          <p class="hero-lead">Snu kortene til definisjonene sitter, og simuler deretter enten en kort 25-spørsmålsprøve eller en full 70-spørsmåls eksamen med fem alternativer per spørsmål.</p>
+          <div class="hero-actions">
+            <button class="primary-button" data-go="cards">Start med flashcards <span>→</span></button>
+            <button class="secondary-button" data-go="exam">Ta en prøveeksamen</button>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="Studieoversikt">
+          <p class="panel-label">Din økt</p>
+          <div class="stat-grid">
+            <div><strong id="home-card-count">0</strong><span>sentrale begreper</span></div>
+            <div><strong class="question-bank-count">0</strong><span>spørsmål i banken</span></div>
+            <div><strong>25/70</strong><span>to testmoduser</span></div>
+            <div><strong id="home-learned-count">0</strong><span>kort markert lært</span></div>
+          </div>
+          <div class="mini-progress">
+            <div><span>Begrepsprogresjon</span><strong id="home-progress-label">0 %</strong></div>
+            <div class="progress-track"><span id="home-progress-bar"></span></div>
+          </div>
+        </aside>
+      </div>
+
+      <section class="section-block">
+        <div class="section-heading">
+          <div><p class="eyebrow">To måter å øve på</p><h2>Fra gjenkalling til eksamensmodus</h2></div>
+        </div>
+        <div class="mode-grid">
+          <button class="mode-card" data-go="cards">
+            <span class="mode-number">01</span>
+            <span class="mode-icon">Aa</span>
+            <strong>Flashcards</strong>
+            <span>Filtrer etter tema, snu kortet og marker begreper du kan.</span>
+            <em>Start repetisjon →</em>
+          </button>
+          <button class="mode-card dark" data-go="exam">
+            <span class="mode-number">02</span>
+            <span class="mode-icon">70</span>
+            <strong>Prøveeksamen</strong>
+            <span>Kort øving eller full eksamenssimulator, med karakter og full gjennomgang av feil.</span>
+            <em>Start ny prøve →</em>
+          </button>
+        </div>
+      </section>
+    </section>
+
+    <section id="cards-view" class="view">
+      <div class="page-intro">
+        <div><p class="eyebrow">Aktiv gjenkalling</p><h1>Flashcards</h1><p>Klikk på kortet eller trykk mellomrom for å se definisjonen.</p></div>
+        <div class="compact-stat"><strong id="learned-count">0</strong><span>av <b id="total-card-count">0</b> lært</span></div>
+      </div>
+      <div class="toolbar">
+        <label>Velg tema<select id="topic-filter"></select></label>
+        <button id="shuffle-cards" class="tool-button">Bland kortene</button>
+        <button id="reset-cards" class="tool-button subtle">Nullstill lærte</button>
+      </div>
+      <div class="card-stage">
+        <div class="flashcard" id="flashcard" tabindex="0" role="button" aria-label="Snu flashcard">
+          <div class="flashcard-inner">
+            <article class="card-face card-front">
+              <div class="card-topline"><span id="card-topic">Tema</span><span id="card-position">1 / 1</span></div>
+              <div class="card-content"><p>Begrep</p><h2 id="card-term"></h2></div>
+              <div class="card-hint">Klikk for definisjon <span>↻</span></div>
+            </article>
+            <article class="card-face card-back">
+              <div class="card-topline"><span id="card-topic-back">Tema</span><span>Definisjon</span></div>
+              <div class="card-content"><p id="card-term-back"></p><h3 id="card-definition"></h3></div>
+              <div class="card-hint">Klikk for begrep <span>↻</span></div>
+            </article>
+          </div>
+        </div>
+        <div class="card-controls">
+          <button id="prev-card" class="round-button" aria-label="Forrige kort">←</button>
+          <button id="toggle-learned" class="learn-button">Marker som lært</button>
+          <button id="next-card" class="round-button" aria-label="Neste kort">→</button>
+        </div>
+        <div class="keyboard-hint"><kbd>←</kbd><kbd>→</kbd> bytt kort · <kbd>mellomrom</kbd> snu kort</div>
+      </div>
+    </section>
+
+    <section id="exam-view" class="view">
+      <div id="exam-start" class="exam-start">
+        <div class="exam-start-copy">
+          <p class="eyebrow">Simulert multiple choice</p>
+          <h1>Prøveeksamen</h1>
+          <p>Velg en rask 25-spørsmålsøkt eller en full simulering på 70 spørsmål. Både spørsmål og alternativer blandes for hver prøve.</p>
+          <ul>
+            <li><strong>5</strong> alternativer</li>
+            <li><strong class="question-bank-count">0</strong> spørsmål i banken</li>
+            <li><strong>70</strong> spørsmål i full modus</li>
+          </ul>
+          <div class="exam-mode-grid">
+            <button class="exam-mode-card" data-exam-mode="quick">
+              <span>Kort prøve</span>
+              <strong>25 spørsmål</strong>
+              <em>Rask repetisjon</em>
+            </button>
+            <button class="exam-mode-card primary-mode" data-exam-mode="full">
+              <span>Full eksamenssimulator</span>
+              <strong>70 spørsmål</strong>
+              <em>Nær faktisk eksamenslengde</em>
+            </button>
+          </div>
+          <p class="exam-note">Karakteren er bare en øvingsindikator. Faktisk strykgrense settes etter eksamen.</p>
+        </div>
+        <div class="exam-visual">
+          <span>STV1020</span>
+          <strong>70</strong>
+          <p>spørsmål<br>fem svarvalg</p>
+        </div>
+      </div>
+
+      <div id="exam-session" class="exam-session hidden">
+        <div class="exam-status">
+          <div><span id="exam-topic">Tema</span><strong id="exam-progress-label">Velg testmodus</strong></div>
+          <div class="progress-track"><span id="exam-progress-bar"></span></div>
+          <span id="answered-label">0 besvart</span>
+        </div>
+        <article class="question-panel">
+          <p class="question-number" id="question-number">Oppgave 1</p>
+          <h2 id="question-text"></h2>
+          <div id="answer-options" class="answer-options"></div>
+        </article>
+        <div class="exam-controls">
+          <button id="exam-prev" class="secondary-button">← Forrige</button>
+          <div id="question-dots" class="question-dots" aria-label="Naviger mellom spørsmål"></div>
+          <button id="exam-next" class="primary-button">Neste <span>→</span></button>
+          <button id="submit-exam" class="primary-button submit hidden">Lever prøve</button>
+        </div>
+      </div>
+
+      <div id="exam-result" class="exam-result hidden">
+        <div class="result-hero">
+          <div class="grade-ring"><span>Karakter</span><strong id="result-grade">A</strong></div>
+          <div><p class="eyebrow">Prøven er levert</p><h1 id="result-heading">Godt jobbet!</h1><p id="result-summary"></p><button id="restart-exam" class="primary-button">Ta samme modus på nytt <span>↻</span></button></div>
+        </div>
+        <div class="result-stats">
+          <div><strong id="correct-count">0</strong><span>riktige svar</span></div>
+          <div><strong id="wrong-count">0</strong><span>feil svar</span></div>
+          <div><strong id="result-percent">0 %</strong><span>resultat</span></div>
+        </div>
+        <section class="review-section">
+          <div class="section-heading"><div><p class="eyebrow">Gjennomgang</p><h2 id="review-heading">Spørsmål du bør se på</h2></div></div>
+          <div id="review-list" class="review-list"></div>
+        </section>
+      </div>
+
+      <section id="history-section" class="history-section">
+        <div class="section-heading history-heading">
+          <div><p class="eyebrow">Utvikling over tid</p><h2>Testhistorikk</h2><p id="history-intro">Resultatene dine lagres lokalt etter hver prøve.</p></div>
+          <button id="clear-history" class="tool-button subtle hidden">Slett historikk</button>
+        </div>
+        <div id="history-empty" class="history-empty">
+          <span>Ingen prøver lagret ennå</span>
+          <strong>Den første leverte prøven blir startpunktet ditt.</strong>
+        </div>
+        <div id="history-content" class="history-content hidden">
+          <div class="history-stats">
+            <div><span>Siste resultat</span><strong id="history-latest">0 %</strong><em id="history-latest-grade">Karakter –</em></div>
+            <div><span>Personlig rekord</span><strong id="history-best">0 %</strong><em id="history-best-grade">Karakter –</em></div>
+            <div><span>Gjennomsnitt</span><strong id="history-average">0 %</strong><em id="history-test-count">0 prøver</em></div>
+            <div id="history-trend-card"><span>Siden forrige prøve</span><strong id="history-trend">–</strong><em id="history-trend-label">Trenger minst to prøver</em></div>
+          </div>
+          <div class="trend-panel">
+            <div class="trend-panel-heading">
+              <div><span>Resultatutvikling</span><strong id="trend-message">Første resultat er registrert</strong></div>
+              <div class="trend-legend"><span class="result-dot"></span>Resultat <span class="pass-dot"></span>Beståttgrense 40 %</div>
+            </div>
+            <div id="trend-chart" class="trend-chart" role="img" aria-label="Graf over tidligere prøveresultater"></div>
+          </div>
+          <div class="history-list-heading"><strong>Tidligere prøver</strong><span>Nyeste først</span></div>
+          <div id="history-list" class="history-list"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer><span>STV1020 Studieapp</span><span>Data lagres bare lokalt i nettleseren.</span></footer>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

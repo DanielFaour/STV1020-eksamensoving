@@ -1,0 +1,9 @@
+# Local/generated study material
+*.docx
+course_extract/
+qa_render/
+tools/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
