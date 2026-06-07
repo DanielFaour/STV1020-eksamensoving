@@ -214,6 +214,27 @@ if (mobileHistory.scrollWidth > 390 || mobileHistory.historyWidth > 362 || mobil
   throw new Error(`Mobile history layout overflows: ${JSON.stringify(mobileHistory)}`);
 }
 
+const mobileExamDots = await evaluate(`(() => {
+  showView("exam");
+  startExam("full");
+  const dots = [...document.querySelectorAll(".question-dot")].map((dot) => {
+    const rect = dot.getBoundingClientRect();
+    return { width: Math.round(rect.width), height: Math.round(rect.height) };
+  });
+  const container = document.querySelector("#question-dots").getBoundingClientRect();
+  return {
+    count: dots.length,
+    maxWidth: Math.max(...dots.map((dot) => dot.width)),
+    minWidth: Math.min(...dots.map((dot) => dot.width)),
+    maxHeight: Math.max(...dots.map((dot) => dot.height)),
+    containerWidth: Math.round(container.width),
+    scrollWidth: document.documentElement.scrollWidth
+  };
+})()`);
+if (mobileExamDots.count !== 70 || mobileExamDots.maxWidth > 12 || mobileExamDots.minWidth < 6 || mobileExamDots.maxHeight > 12 || mobileExamDots.scrollWidth > 390) {
+  throw new Error(`Mobile exam dots layout failed: ${JSON.stringify(mobileExamDots)}`);
+}
+
 const mobile = await evaluate(`(() => {
   showView("cards");
   return {
@@ -227,4 +248,4 @@ if (mobile.innerWidth !== 390 || mobile.scrollWidth > 390 || mobile.cardWidth > 
 }
 
 socket.close();
-console.log("Passed browser flow: 25/70 question modes, five options, exam history, trend chart, 40% pass threshold, review rendering, and 390px mobile layout.");
+console.log("Passed browser flow: 25/70 question modes, five options, exam dots, history, trend chart, 40% pass threshold, review rendering, and 390px mobile layout.");
