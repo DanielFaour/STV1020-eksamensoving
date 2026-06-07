@@ -115,14 +115,15 @@ const failed = await evaluate(`(() => {
     grade: document.querySelector("#result-grade").textContent,
     wrong: document.querySelector("#wrong-count").textContent,
     review: document.querySelectorAll(".review-card").length,
-    choiceNotes: document.querySelectorAll(".review-choice-note").length,
-    firstChoiceNote: document.querySelector(".review-choice-note")?.textContent || "",
+    wrongBoxes: document.querySelectorAll(".review-answer-box.selected-wrong").length,
+    correctBoxes: document.querySelectorAll(".review-answer-box.correct-answer").length,
+    firstWrongBox: document.querySelector(".review-answer-box.selected-wrong")?.textContent || "",
     historyRows: document.querySelectorAll(".history-row").length,
     trend: document.querySelector("#history-trend").textContent,
     chartDots: document.querySelectorAll("#trend-chart circle").length
   };
 })()`);
-if (failed.grade !== "F" || failed.wrong !== "25" || failed.review !== 25 || failed.choiceNotes !== 25 || !failed.firstChoiceNote.includes("Det valgte svaret betyr") || failed.historyRows !== 2 || failed.trend !== "↓ -100 pp" || failed.chartDots !== 2) {
+if (failed.grade !== "F" || failed.wrong !== "25" || failed.review !== 25 || failed.wrongBoxes !== 25 || failed.correctBoxes !== 25 || !failed.firstWrongBox.includes("Ditt svar") || failed.historyRows !== 2 || failed.trend !== "↓ -100 pp" || failed.chartDots !== 2) {
   throw new Error(`Failure result failed: ${JSON.stringify(failed)}`);
 }
 

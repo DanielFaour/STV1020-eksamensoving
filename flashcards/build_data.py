@@ -843,12 +843,12 @@ def explain_choice(question: dict, choice: str, index: int) -> str:
     if choice in TERM_DEFINITIONS:
         return f"«{choice}» betyr: {TERM_DEFINITIONS[choice]}"
     if index == question["correctIndex"]:
-        return f"Dette er riktig: {question['explanation']}"
+        return question["explanation"]
     if question["topic"] == "Formler og regning uten kalkulator" or question["topic"].startswith("Eksamensstil: regresjon"):
-        return f"Dette alternativet gir svaret «{choice}», men regningen/tolkningen følger ikke modellen i oppgaven. {question['explanation']}"
+        return f"«{choice}» følger ikke modellen eller regningen i denne oppgaven. {question['explanation']}"
     if choice.endswith("."):
-        return f"Dette alternativet sier: {choice} Det passer ikke her. {question['explanation']}"
-    return f"Dette alternativet peker på «{choice}», men det er ikke riktig i denne oppgaven. {question['explanation']}"
+        return f"«{choice}» passer ikke her. {question['explanation']}"
+    return f"«{choice}» er ikke riktig her. {question['explanation']}"
 
 
 EXAMPLE_QUESTIONS = [

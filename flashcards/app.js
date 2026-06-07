@@ -342,22 +342,31 @@ function submitExam() {
     const selectedText = result.selected === null ? "Ikke besvart" : `${"ABCDE"[result.selected]}. ${result.question.choices[result.selected]}`;
     const correctText = `${"ABCDE"[result.question.correctIndex]}. ${result.question.choices[result.question.correctIndex]}`;
     const selectedExplanation = result.selected === null
-      ? "Du hoppet over spørsmålet, så det finnes ikke et valgt delsvar å forklare."
-      : result.question.choiceExplanations?.[result.selected] || "Dette svaralternativet har ingen egen forklaring.";
-    const selectedNote = result.correct ? "" : `
-        <div class="review-choice-note">
-          <span>Det valgte svaret betyr</span>
+      ? "Spørsmålet ble ikke besvart."
+      : result.question.choiceExplanations?.[result.selected] || "Ingen egen forklaring for dette svaret.";
+    const answerBlocks = result.correct ? `
+        <div class="review-answer-box correct-answer">
+          <span>Riktig svar</span>
+          <strong>${escapeHTML(correctText)}</strong>
+          <p>${escapeHTML(result.question.explanation)}</p>
+        </div>
+      ` : `
+        <div class="review-answer-box selected-wrong">
+          <span>Ditt svar</span>
+          <strong>${escapeHTML(selectedText)}</strong>
           <p>${escapeHTML(selectedExplanation)}</p>
         </div>
-    `;
+        <div class="review-answer-box correct-answer">
+          <span>Riktig svar</span>
+          <strong>${escapeHTML(correctText)}</strong>
+          <p>${escapeHTML(result.question.explanation)}</p>
+        </div>
+      `;
     return `
       <article class="review-card ${result.correct ? "correct-review" : ""}">
         <span class="review-meta">${escapeHTML(result.question.topic)} · Oppgave fra spørsmålsbanken #${result.question.id}</span>
         <h3>${escapeHTML(result.question.question)}</h3>
-        <div class="review-answer"><span>Ditt svar</span><strong>${escapeHTML(selectedText)}</strong></div>
-        ${selectedNote}
-        <div class="review-answer"><span>Riktig svar</span><strong>${escapeHTML(correctText)}</strong></div>
-        <p class="review-explanation">${escapeHTML(result.question.explanation)}</p>
+        <div class="review-answer-stack">${answerBlocks}</div>
       </article>
     `;
   }).join("");

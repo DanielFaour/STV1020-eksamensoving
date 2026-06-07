@@ -209,12 +209,14 @@ kbd { background: var(--card); border: 1px solid var(--line); padding: 2px 6px; 
 .review-card.correct-review { border-left-color: var(--green); }
 .review-meta { color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
 .review-card h3 { font-family: Georgia, serif; font-size: 21px; font-weight: 500; margin: 8px 0 13px; }
-.review-answer { display: grid; grid-template-columns: 135px 1fr; gap: 7px; font-size: 12px; line-height: 1.5; }
-.review-answer span { color: var(--muted); font-weight: 700; }
-.review-choice-note { margin: 10px 0; padding: 12px 14px; border-radius: 6px; background: rgba(151,55,48,.07); border: 1px solid rgba(151,55,48,.14); }
-.review-choice-note span { display: block; color: var(--red); font-size: 9px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 5px; }
-.review-choice-note p { margin: 0; color: var(--ink); font-size: 12px; line-height: 1.55; }
-.review-explanation { margin: 14px 0 0; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.6; }
+.review-answer-stack { display: grid; gap: 10px; }
+.review-answer-box { padding: 13px 15px; border-radius: 7px; border: 1px solid var(--line); background: rgba(44,47,42,.04); font-size: 12px; line-height: 1.55; }
+.review-answer-box span { display: block; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 5px; }
+.review-answer-box strong { display: block; color: var(--ink); font-size: 13px; margin-bottom: 5px; }
+.review-answer-box p { margin: 0; color: var(--muted); }
+.review-answer-box.correct-answer { background: rgba(23,80,61,.08); border-color: rgba(23,80,61,.25); }
+.review-answer-box.correct-answer span, .review-answer-box.correct-answer strong { color: var(--green); }
+.review-answer-box.selected-wrong { background: rgba(44,47,42,.045); border-color: rgba(44,47,42,.14); }
 
 .history-section { padding: 75px 0 90px; border-top: 1px solid var(--line); }
 .history-heading p:last-child { color: var(--muted); margin: 10px 0 0; font-size: 13px; }
@@ -291,7 +293,6 @@ footer { width: min(1180px, calc(100% - 40px)); margin: 0 auto; border-top: 1px 
   .question-dot { flex: 0 0 8px; width: 8px; height: 8px; }
   .result-hero { grid-template-columns: 1fr; text-align: center; }
   .grade-ring { margin: auto; }
-  .review-answer { grid-template-columns: 1fr; }
   .history-heading { align-items: flex-start; gap: 16px; }
   .history-stats { grid-template-columns: 1fr 1fr; }
   .trend-panel { padding: 20px 14px 12px; border-radius: 7px 30px 7px 7px; }
