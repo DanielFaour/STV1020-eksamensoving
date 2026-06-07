@@ -32,7 +32,7 @@ def main() -> None:
     cards = data["flashcards"]
     questions = data["questions"]
     assert len(cards) >= 100
-    assert len(questions) >= 199
+    assert len(questions) >= 251
     assert [question["id"] for question in questions] == list(range(1, len(questions) + 1))
     assert all(len(question["choices"]) == 5 for question in questions)
     assert all(len(set(question["choices"])) == 5 for question in questions)
