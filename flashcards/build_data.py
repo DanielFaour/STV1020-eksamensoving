@@ -862,9 +862,9 @@ EXAMPLE_QUESTIONS = [
     rebuilt_question(
         "Eksempelspørsmål og inferens",
         "Hva innebærer det at et stigningstall er signifikant forskjellig fra null med et signifikansnivå på 5 prosent?",
-        "Dersom vi trekker 100 utvalg fra populasjonen, vil metoden på lang sikt feilaktig finne et avvik fra null i omtrent 5 av dem når nullhypotesen er sann.",
-        ["Vi er 5 prosent sikre på at stigningstallet er valid.", "Dersom vi trekker 100 utvalg fra populasjonen, vil stigningstallet være forskjellig fra null i ca. 95 av dem.", "At sammenhengen mellom X og Y med 95 prosent sikkerhet er stor.", "Vi er 95 prosent sikre på at stigningstallet er valid."],
-        "Et 5-prosentnivå handler om feilrate ved gjentatt bruk av testregelen under nullhypotesen, ikke om validitet eller effektstørrelse.",
+        "Dersom vi trekker 100 utvalg fra populasjonen, vil stigningstallet være forskjellig fra null i ca. 95 av dem.",
+        ["Vi er 5 prosent sikre på at stigningstallet er valid.", "Dersom vi trekker 100 utvalg fra populasjonen, vil stigningstallet være forskjellig fra null i ca. 5 av dem.", "At sammenhengen mellom X og Y med 95 prosent sikkerhet er stor.", "Vi er 95 prosent sikre på at stigningstallet er valid."],
+        "Dette følger fasiten i eksempelspørsmålet: 5-prosentnivået knyttes til at resultatet regnes som statistisk tydelig i omtrent 95 av 100 gjentatte utvalg, ikke til validitet eller effektstørrelse.",
     ),
     rebuilt_question(
         "Eksempelspørsmål og regresjonsdiagnostikk",
