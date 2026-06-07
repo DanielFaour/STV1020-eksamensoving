@@ -109,18 +109,20 @@ if (perfect.grade !== "A" || perfect.correct !== "25" || perfect.review !== 25 |
 
 const failed = await evaluate(`(() => {
   startExam("quick");
-  examAnswers = examQuestions.map((question) => (question.correctIndex + 1) % 4);
+  examAnswers = examQuestions.map((question) => (question.correctIndex + 1) % 5);
   submitExam();
   return {
     grade: document.querySelector("#result-grade").textContent,
     wrong: document.querySelector("#wrong-count").textContent,
     review: document.querySelectorAll(".review-card").length,
+    choiceNotes: document.querySelectorAll(".review-choice-note").length,
+    firstChoiceNote: document.querySelector(".review-choice-note")?.textContent || "",
     historyRows: document.querySelectorAll(".history-row").length,
     trend: document.querySelector("#history-trend").textContent,
     chartDots: document.querySelectorAll("#trend-chart circle").length
   };
 })()`);
-if (failed.grade !== "F" || failed.wrong !== "25" || failed.review !== 25 || failed.historyRows !== 2 || failed.trend !== "↓ -100 pp" || failed.chartDots !== 2) {
+if (failed.grade !== "F" || failed.wrong !== "25" || failed.review !== 25 || failed.choiceNotes !== 25 || !failed.firstChoiceNote.includes("Det valgte svaret betyr") || failed.historyRows !== 2 || failed.trend !== "↓ -100 pp" || failed.chartDots !== 2) {
   throw new Error(`Failure result failed: ${JSON.stringify(failed)}`);
 }
 
@@ -248,4 +250,4 @@ if (mobile.innerWidth !== 390 || mobile.scrollWidth > 390 || mobile.cardWidth > 
 }
 
 socket.close();
-console.log("Passed browser flow: 25/70 question modes, five options, exam dots, history, trend chart, 40% pass threshold, review rendering, and 390px mobile layout.");
+console.log("Passed browser flow: 25/70 question modes, five options, wrong-answer explanations, exam dots, history, trend chart, 40% pass threshold, review rendering, and 390px mobile layout.");

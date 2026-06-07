@@ -211,6 +211,9 @@ kbd { background: var(--card); border: 1px solid var(--line); padding: 2px 6px; 
 .review-card h3 { font-family: Georgia, serif; font-size: 21px; font-weight: 500; margin: 8px 0 13px; }
 .review-answer { display: grid; grid-template-columns: 135px 1fr; gap: 7px; font-size: 12px; line-height: 1.5; }
 .review-answer span { color: var(--muted); font-weight: 700; }
+.review-choice-note { margin: 10px 0; padding: 12px 14px; border-radius: 6px; background: rgba(151,55,48,.07); border: 1px solid rgba(151,55,48,.14); }
+.review-choice-note span { display: block; color: var(--red); font-size: 9px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 5px; }
+.review-choice-note p { margin: 0; color: var(--ink); font-size: 12px; line-height: 1.55; }
 .review-explanation { margin: 14px 0 0; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.6; }
 
 .history-section { padding: 75px 0 90px; border-top: 1px solid var(--line); }

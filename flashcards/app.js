@@ -126,11 +126,16 @@ function initializeCards() {
 }
 
 function prepareQuestion(question) {
-  const choices = question.choices.map((text, index) => ({ text, correct: index === question.correctIndex }));
+  const choices = question.choices.map((text, index) => ({
+    text,
+    explanation: question.choiceExplanations?.[index] || "",
+    correct: index === question.correctIndex,
+  }));
   const randomizedChoices = shuffle(choices);
   return {
     ...question,
     choices: randomizedChoices.map((choice) => choice.text),
+    choiceExplanations: randomizedChoices.map((choice) => choice.explanation),
     correctIndex: randomizedChoices.findIndex((choice) => choice.correct),
   };
 }
@@ -336,11 +341,21 @@ function submitExam() {
   $("#review-list").innerHTML = reviewResults.map((result) => {
     const selectedText = result.selected === null ? "Ikke besvart" : `${"ABCDE"[result.selected]}. ${result.question.choices[result.selected]}`;
     const correctText = `${"ABCDE"[result.question.correctIndex]}. ${result.question.choices[result.question.correctIndex]}`;
+    const selectedExplanation = result.selected === null
+      ? "Du hoppet over spørsmålet, så det finnes ikke et valgt delsvar å forklare."
+      : result.question.choiceExplanations?.[result.selected] || "Dette svaralternativet har ingen egen forklaring.";
+    const selectedNote = result.correct ? "" : `
+        <div class="review-choice-note">
+          <span>Det valgte svaret betyr</span>
+          <p>${escapeHTML(selectedExplanation)}</p>
+        </div>
+    `;
     return `
       <article class="review-card ${result.correct ? "correct-review" : ""}">
         <span class="review-meta">${escapeHTML(result.question.topic)} · Oppgave fra spørsmålsbanken #${result.question.id}</span>
         <h3>${escapeHTML(result.question.question)}</h3>
         <div class="review-answer"><span>Ditt svar</span><strong>${escapeHTML(selectedText)}</strong></div>
+        ${selectedNote}
         <div class="review-answer"><span>Riktig svar</span><strong>${escapeHTML(correctText)}</strong></div>
         <p class="review-explanation">${escapeHTML(result.question.explanation)}</p>
       </article>

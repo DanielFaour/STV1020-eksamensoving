@@ -36,6 +36,8 @@ def main() -> None:
     assert [question["id"] for question in questions] == list(range(1, len(questions) + 1))
     assert all(len(question["choices"]) == 5 for question in questions)
     assert all(len(set(question["choices"])) == 5 for question in questions)
+    assert all(len(question["choiceExplanations"]) == 5 for question in questions)
+    assert all(all(note for note in question["choiceExplanations"]) for question in questions)
     assert all(0 <= question["correctIndex"] <= 4 for question in questions)
     assert all(question["explanation"] for question in questions)
     assert len({card["id"] for card in cards}) == len(cards)

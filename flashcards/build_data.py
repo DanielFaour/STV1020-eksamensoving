@@ -129,6 +129,8 @@ FLASHCARDS += [
     ("Faste effekter", "Between-variasjon", "Forskjeller mellom enheter, i motsetning til endring innen samme enhet over tid."),
 ]
 
+TERM_DEFINITIONS = {term: definition for _, term, definition in FLASHCARDS}
+
 FLASHCARDS += [
     ("Formler og regning", "T-verdi", "Testverdi i mange regresjons-/gjennomsnittstester: estimat delt på standardfeil."),
     ("Formler og regning", "Omtrent 95 % konfidensintervall", "En nyttig tommelfingerregel er estimat ± 2 × standardfeil."),
@@ -837,6 +839,18 @@ def rebuilt_question(
     }
 
 
+def explain_choice(question: dict, choice: str, index: int) -> str:
+    if choice in TERM_DEFINITIONS:
+        return f"«{choice}» betyr: {TERM_DEFINITIONS[choice]}"
+    if index == question["correctIndex"]:
+        return f"Dette er riktig: {question['explanation']}"
+    if question["topic"] == "Formler og regning uten kalkulator" or question["topic"].startswith("Eksamensstil: regresjon"):
+        return f"Dette alternativet gir svaret «{choice}», men regningen/tolkningen følger ikke modellen i oppgaven. {question['explanation']}"
+    if choice.endswith("."):
+        return f"Dette alternativet sier: {choice} Det passer ikke her. {question['explanation']}"
+    return f"Dette alternativet peker på «{choice}», men det er ikke riktig i denne oppgaven. {question['explanation']}"
+
+
 EXAMPLE_QUESTIONS = [
     rebuilt_question(
         "Eksempelspørsmål og regresjon",
@@ -1027,6 +1041,10 @@ def normalize_question(question: dict) -> dict:
         raise ValueError(f"Question has duplicate choices: {normalized['question']}")
     if not 0 <= normalized["correctIndex"] < 5:
         raise ValueError(f"Question has bad correctIndex: {normalized['question']}")
+    normalized["choiceExplanations"] = [
+        explain_choice(normalized, choice, index)
+        for index, choice in enumerate(normalized["choices"])
+    ]
     return normalized
 
 
