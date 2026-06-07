@@ -1002,7 +1002,7 @@ def flashcard_questions() -> list[dict]:
         questions.append(
             rebuilt_question(
                 f"Flashcards: {topic}",
-                f"Hvilket begrep passer best til denne definisjonen: «{definition}»",
+                f"«{definition}»",
                 term,
                 distractors,
                 f"Riktig begrep er «{term}»: {definition}",
