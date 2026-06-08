@@ -241,13 +241,16 @@ kbd { background: var(--card); border: 1px solid var(--line); padding: 2px 6px; 
 .trend-panel-heading > div:first-child span { color: var(--mint); font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .12em; }
 .trend-panel-heading > div:first-child strong { font-family: Georgia, serif; font-size: 22px; font-weight: 500; margin-top: 5px; }
 .trend-legend { color: var(--mint); font-size: 9px; display: flex; gap: 6px; align-items: center; }
-.result-dot, .pass-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
+.result-dot, .pass-dot, .average-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
+.average-dot { background: rgba(255,255,255,.78); margin-left: 8px; }
 .pass-dot { background: var(--gold); margin-left: 8px; }
 .trend-chart { width: 100%; overflow: hidden; }
 .trend-chart svg { width: 100%; height: auto; max-height: 270px; display: block; }
 .trend-chart text { fill: rgba(255,255,255,.5); font-size: 9px; font-family: Inter, sans-serif; }
 .grid-line { stroke: rgba(255,255,255,.1); stroke-width: 1; }
 .pass-line { stroke: var(--gold); stroke-width: 1; stroke-dasharray: 5 6; opacity: .75; }
+.average-line { stroke: rgba(255,255,255,.72); stroke-width: 1.5; stroke-dasharray: 4 6; }
+.average-label { fill: rgba(255,255,255,.78); font-weight: 800; }
 .trend-area { fill: rgba(216,239,120,.08); }
 .trend-line { fill: none; stroke: var(--lime); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .trend-chart circle { fill: var(--lime); stroke: var(--green-dark); stroke-width: 3; }

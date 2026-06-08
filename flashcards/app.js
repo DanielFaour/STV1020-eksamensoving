@@ -311,6 +311,9 @@ function buildTrendChart() {
   const y = (percent) => padding.top + chartHeight - (percent / 100) * chartHeight;
   const points = entries.map((entry, index) => `${x(index)},${y(entry.percent)}`).join(" ");
   const areaPoints = `${x(0)},${y(0)} ${points} ${x(entries.length - 1)},${y(0)}`;
+  const average = entries.reduce((sum, entry) => sum + entry.percent, 0) / entries.length;
+  const averageY = y(average);
+  const averageLabelY = Math.max(padding.top + 12, averageY - 7);
 
   const grid = [0, 40, 60, 80, 100].map((value) => `
     <line x1="${padding.left}" y1="${y(value)}" x2="${width - padding.right}" y2="${y(value)}" class="${value === 40 ? "pass-line" : "grid-line"}"></line>
@@ -330,6 +333,8 @@ function buildTrendChart() {
       ${grid}
       <polygon points="${areaPoints}" class="trend-area"></polygon>
       ${entries.length > 1 ? `<polyline points="${points}" class="trend-line"></polyline>` : ""}
+      <line x1="${padding.left}" y1="${averageY}" x2="${width - padding.right}" y2="${averageY}" class="average-line"></line>
+      <text x="${width - padding.right - 4}" y="${averageLabelY}" text-anchor="end" class="average-label">Snitt ${Math.round(average)} %</text>
       ${dots}
       ${labels}
     </svg>

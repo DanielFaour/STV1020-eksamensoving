@@ -153,10 +153,12 @@ const failed = await evaluate(`(() => {
     firstWrongBox: document.querySelector(".review-answer-box.selected-wrong")?.textContent || "",
     historyRows: document.querySelectorAll(".history-row").length,
     trend: document.querySelector("#history-trend").textContent,
-    chartDots: document.querySelectorAll("#trend-chart circle").length
+    chartDots: document.querySelectorAll("#trend-chart circle").length,
+    averageLines: document.querySelectorAll("#trend-chart .average-line").length,
+    averageLabel: document.querySelector("#trend-chart .average-label")?.textContent || ""
   };
 })()`);
-if (failed.grade !== "F" || failed.wrong !== "25" || failed.review !== 25 || failed.wrongBoxes !== 25 || failed.correctBoxes !== 25 || !failed.firstWrongBox.includes("Ditt svar") || failed.historyRows !== 2 || failed.trend !== "↓ -100 pp" || failed.chartDots !== 2) {
+if (failed.grade !== "F" || failed.wrong !== "25" || failed.review !== 25 || failed.wrongBoxes !== 25 || failed.correctBoxes !== 25 || !failed.firstWrongBox.includes("Ditt svar") || failed.historyRows !== 2 || failed.trend !== "↓ -100 pp" || failed.chartDots !== 2 || failed.averageLines !== 1 || !failed.averageLabel.includes("Snitt")) {
   throw new Error(`Failure result failed: ${JSON.stringify(failed)}`);
 }
 
@@ -284,4 +286,4 @@ if (mobile.innerWidth !== 390 || mobile.scrollWidth > 390 || mobile.cardWidth > 
 }
 
 socket.close();
-console.log("Passed browser flow: flagged flashcards, 25/70 question modes, five options, wrong-answer explanations, exam dots, history, trend chart, 40% pass threshold, review rendering, and 390px mobile layout.");
+console.log("Passed browser flow: flagged flashcards, 25/70 question modes, five options, wrong-answer explanations, exam dots, history trend chart with average line, 40% pass threshold, review rendering, and 390px mobile layout.");
