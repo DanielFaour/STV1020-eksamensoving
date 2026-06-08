@@ -49,7 +49,7 @@ async function evaluate(expression) {
 
 await call("Runtime.enable");
 await new Promise((resolve) => setTimeout(resolve, 500));
-await evaluate(`localStorage.removeItem("stv1020-exam-history"); examHistory = []; renderHistory();`);
+await evaluate(`localStorage.removeItem("stv1020-exam-history"); localStorage.removeItem("stv1020-flagged-cards"); examHistory = []; flaggedCards.clear(); showFlaggedOnly = false; renderHistory(); updateFlagControls();`);
 
 const home = await evaluate(`({
   cards: window.STV1020_DATA.flashcards.length,
@@ -77,6 +77,39 @@ const flippedCard = await evaluate(`(() => {
 })()`);
 if (flippedCard.frontVisibility !== "hidden" || flippedCard.frontOpacity !== "0" || flippedCard.backVisibility !== "visible" || flippedCard.backOpacity !== "1") {
   throw new Error(`Flipped card leaks its front face: ${JSON.stringify(flippedCard)}`);
+}
+
+const flagFlow = await evaluate(`(() => {
+  showView("cards");
+  const initial = {
+    filterDisabled: document.querySelector("#flag-filter").disabled,
+    filterText: document.querySelector("#flag-filter").textContent
+  };
+  document.querySelector("#toggle-flagged").click();
+  const afterFlag = {
+    stored: JSON.parse(localStorage.getItem("stv1020-flagged-cards") || "[]").length,
+    buttonText: document.querySelector("#toggle-flagged").textContent,
+    filterDisabled: document.querySelector("#flag-filter").disabled,
+    filterText: document.querySelector("#flag-filter").textContent
+  };
+  document.querySelector("#flag-filter").click();
+  const filtered = {
+    visible: visibleCards.length,
+    active: document.querySelector("#flag-filter").classList.contains("active"),
+    position: document.querySelector("#card-position").textContent
+  };
+  document.querySelector("#toggle-flagged").click();
+  const afterUnflag = {
+    stored: JSON.parse(localStorage.getItem("stv1020-flagged-cards") || "[]").length,
+    visible: visibleCards.length,
+    filterDisabled: document.querySelector("#flag-filter").disabled,
+    filterText: document.querySelector("#flag-filter").textContent
+  };
+  showView("home");
+  return { initial, afterFlag, filtered, afterUnflag };
+})()`);
+if (!flagFlow.initial.filterDisabled || flagFlow.afterFlag.stored !== 1 || flagFlow.afterFlag.filterDisabled || !flagFlow.afterFlag.buttonText.includes("Flagget") || flagFlow.filtered.visible !== 1 || !flagFlow.filtered.active || flagFlow.filtered.position !== "1 / 1" || flagFlow.afterUnflag.stored !== 0 || flagFlow.afterUnflag.visible !== 121 || !flagFlow.afterUnflag.filterDisabled) {
+  throw new Error(`Flagged card flow failed: ${JSON.stringify(flagFlow)}`);
 }
 
 const examStarted = await evaluate(`(() => {
@@ -251,4 +284,4 @@ if (mobile.innerWidth !== 390 || mobile.scrollWidth > 390 || mobile.cardWidth > 
 }
 
 socket.close();
-console.log("Passed browser flow: 25/70 question modes, five options, wrong-answer explanations, exam dots, history, trend chart, 40% pass threshold, review rendering, and 390px mobile layout.");
+console.log("Passed browser flow: flagged flashcards, 25/70 question modes, five options, wrong-answer explanations, exam dots, history, trend chart, 40% pass threshold, review rendering, and 390px mobile layout.");

@@ -77,6 +77,7 @@
       </div>
       <div class="toolbar">
         <label>Velg tema<select id="topic-filter"></select></label>
+        <button id="flag-filter" class="tool-button subtle" disabled>Vis flaggede (0)</button>
         <button id="shuffle-cards" class="tool-button">Bland kortene</button>
         <button id="reset-cards" class="tool-button subtle">Nullstill lærte</button>
       </div>
@@ -97,6 +98,7 @@
         </div>
         <div class="card-controls">
           <button id="prev-card" class="round-button" aria-label="Forrige kort">←</button>
+          <button id="toggle-flagged" class="flag-button" aria-pressed="false">Flagg for øving</button>
           <button id="toggle-learned" class="learn-button">Marker som lært</button>
           <button id="next-card" class="round-button" aria-label="Neste kort">→</button>
         </div>

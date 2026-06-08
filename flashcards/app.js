@@ -19,6 +19,7 @@ const escapeHTML = (value) => String(value).replace(/[&<>"']/g, (character) => (
 })[character]);
 
 const learned = new Set(JSON.parse(localStorage.getItem("stv1020-learned") || "[]"));
+const flaggedCards = new Set(JSON.parse(localStorage.getItem("stv1020-flagged-cards") || "[]"));
 let examHistory = JSON.parse(localStorage.getItem("stv1020-exam-history") || "[]");
 const EXAM_MODES = {
   quick: { key: "quick", size: 25, label: "Kort prøve" },
@@ -26,6 +27,7 @@ const EXAM_MODES = {
 };
 let visibleCards = [...flashcards];
 let cardIndex = 0;
+let showFlaggedOnly = false;
 let examQuestions = [];
 let examAnswers = [];
 let examIndex = 0;
@@ -47,6 +49,11 @@ function saveLearned() {
   updateProgress();
 }
 
+function saveFlaggedCards() {
+  localStorage.setItem("stv1020-flagged-cards", JSON.stringify([...flaggedCards]));
+  updateFlagControls();
+}
+
 function updateProgress() {
   const percent = Math.round((learned.size / flashcards.length) * 100);
   $("#learned-count").textContent = learned.size;
@@ -60,9 +67,44 @@ function updateProgress() {
   });
 }
 
+function updateFlagControls() {
+  const count = flaggedCards.size;
+  if (count === 0) showFlaggedOnly = false;
+  $("#flag-filter").disabled = count === 0;
+  $("#flag-filter").classList.toggle("active", showFlaggedOnly);
+  $("#flag-filter").textContent = showFlaggedOnly ? `Viser flaggede (${count})` : `Vis flaggede (${count})`;
+}
+
+function refreshVisibleCards() {
+  const selectedTopic = $("#topic-filter").value || "Alle temaer";
+  visibleCards = flashcards.filter((card) => {
+    const matchesTopic = selectedTopic === "Alle temaer" || card.topic === selectedTopic;
+    const matchesFlag = !showFlaggedOnly || flaggedCards.has(card.id);
+    return matchesTopic && matchesFlag;
+  });
+  if (cardIndex >= visibleCards.length) cardIndex = Math.max(visibleCards.length - 1, 0);
+  renderCard();
+}
+
 function renderCard() {
   const card = visibleCards[cardIndex];
   $("#flashcard").classList.remove("flipped");
+  if (!card) {
+    $("#flashcard").classList.add("empty-card");
+    $("#card-topic").textContent = "Ingen kort";
+    $("#card-topic-back").textContent = "Ingen kort";
+    $("#card-position").textContent = "0 / 0";
+    $("#card-term").textContent = "Ingen flaggede kort";
+    $("#card-term-back").textContent = "Tomt utvalg";
+    $("#card-definition").textContent = "Det finnes ingen flaggede kort i dette temaet. Velg Alle temaer eller fjern filteret for å se kort igjen.";
+    $("#toggle-learned").disabled = true;
+    $("#toggle-flagged").disabled = true;
+    $("#prev-card").disabled = true;
+    $("#next-card").disabled = true;
+    updateFlagControls();
+    return;
+  }
+  $("#flashcard").classList.remove("empty-card");
   $("#card-topic").textContent = card.topic;
   $("#card-topic-back").textContent = card.topic;
   $("#card-position").textContent = `${cardIndex + 1} / ${visibleCards.length}`;
@@ -70,11 +112,21 @@ function renderCard() {
   $("#card-term-back").textContent = card.term;
   $("#card-definition").textContent = card.definition;
   const isLearned = learned.has(card.id);
+  const isFlagged = flaggedCards.has(card.id);
   $("#toggle-learned").classList.toggle("learned", isLearned);
   $("#toggle-learned").textContent = isLearned ? "Lært ✓" : "Marker som lært";
+  $("#toggle-learned").disabled = false;
+  $("#toggle-flagged").classList.toggle("flagged", isFlagged);
+  $("#toggle-flagged").textContent = isFlagged ? "Flagget ★" : "Flagg for øving";
+  $("#toggle-flagged").setAttribute("aria-pressed", String(isFlagged));
+  $("#toggle-flagged").disabled = false;
+  $("#prev-card").disabled = false;
+  $("#next-card").disabled = false;
+  updateFlagControls();
 }
 
 function changeCard(direction) {
+  if (!visibleCards.length) return;
   cardIndex = (cardIndex + direction + visibleCards.length) % visibleCards.length;
   renderCard();
 }
@@ -82,12 +134,9 @@ function changeCard(direction) {
 function initializeCards() {
   const topics = ["Alle temaer", ...new Set(flashcards.map((card) => card.topic))];
   $("#topic-filter").innerHTML = topics.map((topic) => `<option value="${escapeHTML(topic)}">${escapeHTML(topic)}</option>`).join("");
-  $("#topic-filter").addEventListener("change", (event) => {
-    visibleCards = event.target.value === "Alle temaer"
-      ? [...flashcards]
-      : flashcards.filter((card) => card.topic === event.target.value);
+  $("#topic-filter").addEventListener("change", () => {
     cardIndex = 0;
-    renderCard();
+    refreshVisibleCards();
   });
   $("#flashcard").addEventListener("click", () => $("#flashcard").classList.toggle("flipped"));
   $("#flashcard").addEventListener("keydown", (event) => {
@@ -100,9 +149,28 @@ function initializeCards() {
     cardIndex = 0;
     renderCard();
   });
+  $("#flag-filter").addEventListener("click", () => {
+    if (!flaggedCards.size) return;
+    showFlaggedOnly = !showFlaggedOnly;
+    cardIndex = 0;
+    refreshVisibleCards();
+  });
+  $("#toggle-flagged").addEventListener("click", () => {
+    const card = visibleCards[cardIndex];
+    if (!card) return;
+    const wasShowingFlagged = showFlaggedOnly;
+    flaggedCards.has(card.id) ? flaggedCards.delete(card.id) : flaggedCards.add(card.id);
+    saveFlaggedCards();
+    if (wasShowingFlagged && !flaggedCards.has(card.id)) {
+      refreshVisibleCards();
+    } else {
+      renderCard();
+    }
+  });
   $("#toggle-learned").addEventListener("click", () => {
-    const id = visibleCards[cardIndex].id;
-    learned.has(id) ? learned.delete(id) : learned.add(id);
+    const card = visibleCards[cardIndex];
+    if (!card) return;
+    learned.has(card.id) ? learned.delete(card.id) : learned.add(card.id);
     saveLearned();
     renderCard();
   });
