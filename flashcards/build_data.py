@@ -129,8 +129,6 @@ FLASHCARDS += [
     ("Faste effekter", "Between-variasjon", "Forskjeller mellom enheter, i motsetning til endring innen samme enhet over tid."),
 ]
 
-TERM_DEFINITIONS = {term: definition for _, term, definition in FLASHCARDS}
-
 FLASHCARDS += [
     ("Formler og regning", "T-verdi", "Testverdi i mange regresjons-/gjennomsnittstester: estimat delt på standardfeil."),
     ("Formler og regning", "Omtrent 95 % konfidensintervall", "En nyttig tommelfingerregel er estimat ± 2 × standardfeil."),
@@ -141,6 +139,9 @@ FLASHCARDS += [
     ("Formler og regning", "Relativ prosentvis endring", "Endring delt på startverdien, for eksempel 6 / 30 = 20 prosent."),
     ("Formler og regning", "Forventet treff ved gjetting", "Med fem svaralternativer er forventet treffrate 1 av 5, altså 20 prosent."),
 ]
+
+TERM_DEFINITIONS = {term: definition for _, term, definition in FLASHCARDS}
+DEFINITION_TERMS = {definition: term for _, term, definition in FLASHCARDS}
 
 
 EXTRA_QUESTIONS = [
@@ -844,6 +845,8 @@ def explain_choice(question: dict, choice: str, index: int) -> str:
         return f"«{choice}» betyr: {TERM_DEFINITIONS[choice]}"
     if index == question["correctIndex"]:
         return question["explanation"]
+    if question["topic"].startswith("Flashcards reversert:") and choice in DEFINITION_TERMS:
+        return f"Denne definisjonen hører til «{DEFINITION_TERMS[choice]}». {question['explanation']}"
     if question["topic"] == "Formler og regning uten kalkulator" or question["topic"].startswith("Eksamensstil: regresjon"):
         return f"«{choice}» følger ikke modellen eller regningen i denne oppgaven. {question['explanation']}"
     if choice.endswith("."):
@@ -1153,6 +1156,43 @@ def flashcard_questions() -> list[dict]:
     return questions
 
 
+def reverse_flashcard_questions() -> list[dict]:
+    by_topic: dict[str, list[tuple[str, str]]] = {}
+    for topic, term, definition in FLASHCARDS:
+        by_topic.setdefault(topic, []).append((term, definition))
+
+    all_cards = [(topic, term, definition) for topic, term, definition in FLASHCARDS]
+    questions: list[dict] = []
+    for card_index, (topic, term, definition) in enumerate(all_cards):
+        same_topic = [
+            other_definition
+            for other_term, other_definition in by_topic[topic]
+            if other_definition != definition
+        ]
+        broader = [
+            other_definition
+            for other_topic, other_term, other_definition in all_cards
+            if other_topic != topic and other_definition != definition
+        ]
+        distractors: list[str] = []
+        rotated = same_topic[card_index % max(len(same_topic), 1):] + same_topic[:card_index % max(len(same_topic), 1)]
+        for candidate in [*rotated, *broader]:
+            if candidate != definition and candidate not in distractors:
+                distractors.append(candidate)
+            if len(distractors) == 4:
+                break
+        questions.append(
+            rebuilt_question(
+                f"Flashcards reversert: {topic}",
+                f"Hvilken definisjon passer til begrepet «{term}»?",
+                definition,
+                distractors,
+                f"Riktig definisjon for «{term}» er: {definition}",
+            )
+        )
+    return questions
+
+
 def parse_questions() -> list[dict]:
     raw_questions = [
         *EXAMPLE_QUESTIONS,
@@ -1161,6 +1201,7 @@ def parse_questions() -> list[dict]:
         *PRIORITY_EXAM_DRILL_QUESTIONS,
         *FORMULA_QUESTIONS,
         *flashcard_questions(),
+        *reverse_flashcard_questions(),
     ]
     questions = []
     seen_prompts: set[str] = set()

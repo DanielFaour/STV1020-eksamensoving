@@ -56,7 +56,7 @@ const home = await evaluate(`({
   questions: window.STV1020_DATA.questions.length,
   homeActive: document.querySelector("#home-view").classList.contains("active")
 })`);
-if (home.cards !== 121 || home.questions !== 315 || !home.homeActive) {
+if (home.cards !== 121 || home.questions !== 436 || !home.homeActive) {
   throw new Error(`Unexpected home state: ${JSON.stringify(home)}`);
 }
 
