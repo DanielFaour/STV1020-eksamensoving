@@ -84,6 +84,10 @@ FLASHCARDS = [
 ]
 
 FLASHCARDS += [
+    ("Kausalitet", "K&W: troverdig kausalmekanisme", "Det må finnes en plausibel forklaring på hvordan X kan påvirke Y."),
+    ("Kausalitet", "K&W: tidsrekkefølge", "X må komme før Y i tid; årsaken må oppstå før virkningen."),
+    ("Kausalitet", "K&W: samvariasjon", "X og Y må variere systematisk sammen; uten samvariasjon er det lite å forklare kausalt."),
+    ("Kausalitet", "K&W: ikke-spuriøsitet", "Sammenhengen mellom X og Y må ikke skyldes en bakenforliggende variabel Z som påvirker begge."),
     ("Kausalitet", "Direkte effekt", "Den delen av effekten fra X til Y som ikke går gjennom en mellomliggende mediator."),
     ("Kausalitet", "Indirekte effekt", "Den delen av effekten fra X til Y som går gjennom en mediator."),
     ("Kausalitet", "Total effekt", "Summen av den direkte og den indirekte effekten av X på Y."),

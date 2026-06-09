@@ -56,7 +56,7 @@ const home = await evaluate(`({
   questions: window.STV1020_DATA.questions.length,
   homeActive: document.querySelector("#home-view").classList.contains("active")
 })`);
-if (home.cards !== 121 || home.questions !== 486 || !home.homeActive) {
+if (home.cards !== 125 || home.questions !== 494 || !home.homeActive) {
   throw new Error(`Unexpected home state: ${JSON.stringify(home)}`);
 }
 
@@ -108,7 +108,7 @@ const flagFlow = await evaluate(`(() => {
   showView("home");
   return { initial, afterFlag, filtered, afterUnflag };
 })()`);
-if (!flagFlow.initial.filterDisabled || flagFlow.afterFlag.stored !== 1 || flagFlow.afterFlag.filterDisabled || !flagFlow.afterFlag.buttonText.includes("Flagget") || flagFlow.filtered.visible !== 1 || !flagFlow.filtered.active || flagFlow.filtered.position !== "1 / 1" || flagFlow.afterUnflag.stored !== 0 || flagFlow.afterUnflag.visible !== 121 || !flagFlow.afterUnflag.filterDisabled) {
+if (!flagFlow.initial.filterDisabled || flagFlow.afterFlag.stored !== 1 || flagFlow.afterFlag.filterDisabled || !flagFlow.afterFlag.buttonText.includes("Flagget") || flagFlow.filtered.visible !== 1 || !flagFlow.filtered.active || flagFlow.filtered.position !== "1 / 1" || flagFlow.afterUnflag.stored !== 0 || flagFlow.afterUnflag.visible !== 125 || !flagFlow.afterUnflag.filterDisabled) {
   throw new Error(`Flagged card flow failed: ${JSON.stringify(flagFlow)}`);
 }
 
